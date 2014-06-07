@@ -1,0 +1,105 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+\usepackage{amssymb,amsthm}
+\usepackage{amsmath,amssymb,CJK}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{enumerate}
+
+\openup 7pt\pagestyle{plain} \topmargin -40pt \textwidth
+14.5cm\textheight 21.5cm
+\parskip .09 truein
+\baselineskip 4pt\lineskip 4pt \setcounter{page}{1}
+\def\a{\alpha}\def\b{\beta}\def\d{\delta}\def\D{\Delta}\def\fs{\footnotesize}
+\def\g{\gamma}
+\def\G{\Gamma}\def\l{\lambda}\def\L{\Lambda}\def\o{\omiga}\def\p{\psi}
+\def\se{\subseteq}\def\seq{\subseteq}\def\Si{\Sigma}\def\si{\sigma}\def\vp{\varphi}\def\es{\varepsilon}
+\def\sc{\scriptstyle}\def\ssc{\scriptscriptstyle}\def\dis{\displaystyle}
+\def\cl{\centerline}\def\ll{\leftline}\def\rl{\rightline}\def\nl{\newline}
+\def\ol{\overline}\def\ul{\underline}\def\wt{\widetilde}\def\wh{\widehat}
+\def\rar{\rightarrow}\def\Rar{\Rightarrow}\def\lar{\leftarrow}
+\def\Lar{\Leftarrow}\def\Rla{\rightleftarrow}\def\bs{\backslash}
+\def\ra{\rangle}\def\la{\langle}\def\hs{\hspace*}\def\rb{\raisebox}
+\def\ni{\noindent}\def\hi{\hangindent}\def\ha{\hangafter}
+\def\vs{\vspace*}
+\def\hom#1{\mbox{\rm Hom($#1,#1$)}}
+\def\thebeg{\vskip8pt\par\ni}
+\def\theend{\vskip5pt\par}
+\def\chabeg{\pagebreak\par}
+\def\chaend{\vskip20pt\par}
+\def\secbeg{\vskip15pt\par}
+\def\secend{\vskip10pt\par}
+\def\exebeg{\vskip10pt}
+\def\exeend{\vskip6pt}
+\def\undot#1{\mbox{$\mbox{#1}\hs{-1.5ex}_{_{\dis\centerdot}}\,\,$}}
+\def\qed{\hfill\mbox{$\Box$}}
+\def\C{\mathbb{C}}
+\def\Q{\mathbb{Q}}
+\def\ii{\mbox{\,{\bf i}\,}}
+\def\jj{\mbox{\,{\bf j}\,}}
+\def\AA{{\cal A}}
+\def\BB{{\cal B}}
+\def\DD{{\cal D}}
+\def\EE{{\mbox{\bf 1}}}
+\def\OO{{\mbox{\bf 0}}}
+\def\kk{{\mbox{\bf k}}}
+\def\R{\mathbb{R}}
+\def\F{\mathbb{F}{\ssc\,}}
+%\def\similar{\rb{-4pt}{\mbox{\,\~\,}}}
+\def\similar{\backsim}
+\def\Llra{\Longleftrightarrow}
+\def\Lra{\Longrightarrow}
+\def\Lla{\Longleftarrow}
+\def\mat#1#2{\mbox{$\left(\begin{array}{#1}#2\end{array}\right)$}}
+\def\det#1#2{\mbox{$\left|\begin{array}{#1}#2\end{array}\right|$}}
+\def\eset{\emptyset}
+\parindent=5ex
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\date{}
+\title{Assignment1}
+\author{Qinglin Li, 5110309074}
+\begin{document}
+\maketitle
+
+\section*{2.15}
+Let $OPT$ be the value of an optimal solution, and $S$ be the elements covered by optimal solution.\\
+Let $S_1, S_2, \cdots, S_k$ be the sets selected by the greedy algorithm in order. \\
+Let $T_i = S_1\cup S_2\cup \cdots \cup S_{i-1}\cup S_i$, $w_i = \sum_{e\in T_i} \text{weight}(e)$ and $r_i = OPT-w_i$.\\
+At the $i+1$-th step, there should be a set in optimal solution covers elements with weight at least $\frac{r_i}{k}$ in $S-T_i$. Otherwise, $\text{weight}(S\cup T_i)<w_i + k\cdot\frac{r_i}{k}=OPT\leq\text{weight}(S\cup T_i)$, contradiction.\\
+So $w_{i+1} - w_i \geq \frac{r_i}{k} \Rightarrow (OPT-r_{i+1}) - (OPT-r_i)\geq \frac{r_i}{k}\Rightarrow r_{i+1}\leq (1-\frac{1}{k})r_i$.\\
+By induction, we obtain $r_k\leq (1-\frac{1}{k})^kOPT$.\\
+$w_k=OPT-r_k\geq OPT-(1-\frac{1}{k})^kOPT\geq(1-\frac{1}{e})OPT$
+
+\section*{3.2}
+First, add a new vertex $v$ connected to each sender, the cost of each edge from $v$ to each sender is $0$.
+\subsection*{$S\cup R=V$}
+Compute the MST of the new graph. Each receiver should have a path to $v$, and there must be a sender in the path since $v$ only connects to senders. The cost of the optimal solution should be at least the cost of MST, because the union of optimal solution and all edge from $v$ forms a connected subgraph.\\
+So the problem is in \textbf{P}.
+\subsection*{$S\cup R\neq V$}
+The optimal solution corresponds to the minimum cost Steiner tree of the new graph. So it's in \textbf{NP}.\\
+By using the 2-approximation algorithm of minimum cost Steiner tree, we obtain a 2-approximation algorithm of this problem.
+
+\section*{5.1}
+Construct a complete graph $G'=(V, E')$ from G\\
+$$
+cost(u,v)=\left\{
+\begin{aligned}
+&1 &(u,v) \in E \\
+&\alpha(n)+1 \quad &(u,v)\not\in E\\
+\end{aligned}
+\right.
+$$
+$G'$ should have the following property:
+\begin{itemize}
+\item
+if $dom(G)\leq k$, then $G'$ has a k-center of cost 1
+\item
+if $dom(G)> k$, then the optimal k-center of $G'$ have cost $\alpha(n)+1$
+\end{itemize}
+
+If the $k$-center problem can be approximated within factor $\a(n)$ for any function $\a(n)$, in the first case, the approximated solution should be 1. So using this algorithm, we can solve the dominating set problem.\\
+So the approximation algorithm doesn't exist unless \textbf{P=NP}
+\end{document}
