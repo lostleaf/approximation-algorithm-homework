@@ -1,0 +1,126 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+\usepackage{amssymb,amsthm}
+\usepackage{amsmath,amssymb,CJK}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{enumerate}
+
+\openup 7pt\pagestyle{plain} \topmargin -40pt \textwidth
+14.5cm\textheight 21.5cm
+\parskip .09 truein
+\baselineskip 4pt\lineskip 4pt \setcounter{page}{1}
+\def\a{\alpha}\def\b{\beta}\def\d{\delta}\def\D{\Delta}\def\fs{\footnotesize}
+\def\g{\gamma}\def\e{\varepsilon}
+\def\G{\Gamma}\def\l{\lambda}\def\L{\Lambda}\def\o{\omiga}\def\p{\psi}
+\def\se{\subseteq}\def\seq{\subseteq}\def\Si{\Sigma}\def\si{\sigma}\def\vp{\varphi}\def\es{\varepsilon}
+\def\sc{\scriptstyle}\def\ssc{\scriptscriptstyle}\def\dis{\displaystyle}
+\def\cl{\centerline}\def\ll{\leftline}\def\rl{\rightline}\def\nl{\newline}
+\def\ol{\overline}\def\ul{\underline}\def\wt{\widetilde}\def\wh{\widehat}
+\def\rar{\rightarrow}\def\Rar{\Rightarrow}\def\lar{\leftarrow}
+\def\Lar{\Leftarrow}\def\Rla{\rightleftarrow}\def\bs{\backslash}
+\def\ra{\rangle}\def\la{\langle}\def\hs{\hspace*}\def\rb{\raisebox}
+\def\ni{\noindent}\def\hi{\hangindent}\def\ha{\hangafter}
+\def\vs{\vspace*}
+\def\hom#1{\mbox{\rm Hom($#1,#1$)}}
+\def\thebeg{\vskip8pt\par\ni}
+\def\theend{\vskip5pt\par}
+\def\chabeg{\pagebreak\par}
+\def\chaend{\vskip20pt\par}
+\def\secbeg{\vskip15pt\par}
+\def\secend{\vskip10pt\par}
+\def\exebeg{\vskip10pt}
+\def\exeend{\vskip6pt}
+\def\undot#1{\mbox{$\mbox{#1}\hs{-1.5ex}_{_{\dis\centerdot}}\,\,$}}
+\def\qed{\hfill\mbox{$\Box$}}
+\def\C{\mathbb{C}}
+\def\Q{\mathbb{Q}}
+\def\ii{\mbox{\,{\bf i}\,}}
+\def\jj{\mbox{\,{\bf j}\,}}
+\def\AA{{\cal A}}
+\def\BB{{\cal B}}
+\def\DD{{\cal D}}
+\def\EE{{\mbox{\bf 1}}}
+\def\OO{{\mbox{\bf 0}}}
+\def\kk{{\mbox{\bf k}}}
+\def\R{\mathbb{R}}
+\def\F{\mathbb{F}{\ssc\,}}
+%\def\similar{\rb{-4pt}{\mbox{\,\~\,}}}
+\def\similar{\backsim}
+\def\Llra{\Longleftrightarrow}
+\def\Lra{\Longrightarrow}
+\def\Lla{\Longleftarrow}
+\def\mat#1#2{\mbox{$\left(\begin{array}{#1}#2\end{array}\right)$}}
+\def\det#1#2{\mbox{$\left|\begin{array}{#1}#2\end{array}\right|$}}
+\def\eset{\emptyset}
+\parindent=5ex
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\date{}
+\title{Assignment 2}
+\author{Qinglin Li, 5110309074}
+\begin{document}
+\maketitle
+\section*{Problem 1, 8.3}
+\subsection*{pseudo-polynomial}
+Let $B=\sum_{i=1}^n a_i$\\
+Let $f(i, s) = \left\{
+\begin{aligned}
+&1 &\exists S\subseteq [1..n] \sum_{i\in S}a_i=s\\
+&0 \quad &otherwise\\
+\end{aligned}
+\right.$\\
+Let $c(i, s) = \left\{
+\begin{aligned}
+&S \quad &f(i, s) = 1\\
+&\emptyset &f(i, s) = 0\\
+\end{aligned}
+\right.$\\
+We can obtain $f$ and $c$ by a dynamic programming algorithm.
+\begin{lstlisting}[language=C]
+f(0, 0) = 1
+for i = 1 to n
+  for s = 0 to B
+    if f(i-1, s)=1
+      f(i, s)=1
+      c(i, s)=c(i-1, s)
+    else if s >= a[i] and f(i-1, s-a[i])=1
+      f(i, s)=1
+      c(i, s)=union(c(i-1, s-a[i]), {i})
+for s = B/2 to B
+  if f(n, s)=1
+    S1=c(n, s)
+    break
+S2=A/S1
+\end{lstlisting}
+Obviously, this algorithm is  pseudo-polynomial.\\
+\subsection*{Approximation algorithm}
+For $m = 2, \cdots, n$ let us denote by $I_m$ the instance of Subset-Sums Ratio which consists of the m smallest numbers $a_1, . . . , a_m$. At the top level, the algorithm executes its main procedure on the inputs $I_m$, for $m = 2, \cdots, n$, and takes as solution the best among the solutions obtained for these instances.\\
+Given any $\e$ in the range $0<\e<1$, we set $k(m)=\e^2\cdot a_m/(2m)$.Let $n_0\leq n$ be the greatest integer such that $k(n_0) < 1$.\\ 
+
+We now describe the algorithm on the instance $I_m$.\\
+If $m\leq n_0$, then we apply the pseudo-polynomial algorithm of the previous subsection to $I_m$. Since $a_{n_0}\leq 2n/\e^2$, this will take polynomial time.\\
+If $n_0 < m \leq n$, then we transform the instance $I_m$ into another one that
+contains only polynomial-size numbers. Set $a_i' = \lfloor a_i/k(m) \rfloor$ for $i = 1,\cdots,m$.
+Observe that $a_m' = \lfloor 2m/\e^2 \rfloor$ is indeed of polynomial size. Let us denote by $I_m'$
+the instance of Subset-Sums Ratio that contains the numbers $a_i'$ such that
+$a_i'\geq m/\e$. Suppose that $I_m'$ contains $t$ numbers, $a_{m-t+1}',\cdots,a_m'$ . Since $\e\leq 1$,we have $a_m' \geq m/\e$, and therefore $t > 0$. We will distinguish between two cases according to the value of $t$.\\
+\textbf{Case 1}: $t = 1$. Let $j$ be the smallest nonnegative integer such that $a_{j+1}+\cdots+ a_{m−1} < a_m$. If $j= 0$, then the solution will be $S_1 = \{m\}$ and $S_2 = \{1,\cdots,m-1\}$. Otherwise the solution will be $S1 =\{j,j+1,\cdots,m-1\}$ and $S2 =\{m\}$.\\
+\textbf{Case2}: $t>1$.We solve $I_m'$,using the pseudo-polynomial algorithm which will take only polynomial time on this instance. Then we distinguish between two cases, depending on the value of the optimum of $I_m'$.\\
+\textbf{Case2a}: $opt(I_m')=1$. The algorithm returns the solution which realizes this optimum for $I_m'$.\\
+\textbf{Case2b}: $opt(I_m')=1$. We consider all possible pairs of disjoint subsets $P(m)$ and $Q(m)$ of $\{m-t+1, \cdots, m\}$ with sum of $P(m)$ greater than $Q(m)$. In the decreasing order, add $m-t, \cdots, 1$ to $Q(m)$ until sum of $Q(m)$ is greater than $P(m)$ or all elements are added into $Q(m)$. Then let $S_1(m)$ be the one with greater sum in $P(m)$ and $Q(m)$, $S_2(m)$ be the other.\\
+Choose $S_1$ and $S_2$ among all $S_1(m)$ and $S_2(m)$ to minimize the ratio.\\
+
+The above algorithm is FPTAS.
+\section*{Problem 2}
+\textbf{Problem:} In the 2-approximation algorithm for job schedule, what if we change the algo- rithm by considering jobs according to their processing time. Analyze the approximation ratio of this variant algorithm.\\
+
+Suppose the jobs are ordered by processing time, $p_1\geq p_2\geq \cdots\geq p_n$.\\
+Let the last finished job be $p_j$ with starting time $s$.\\
+Remove all jobs with starting time greater than $s$. Let the new instance be $I'$. $OPT(I')\leq OPT(I)$ and the algorithm should give the same answer in both instances.\\
+If $p_j\leq OPT(I')/3$, since all jobs starting after $s$ are removed, $s\leq \frac{\sum_{i\neq j}q_i}{m}\leq OPT(I')$, $p_j+s\leq \frac{4}{3}OPT(I')\leq OPT(I)$\\
+If $p_j> OPT(I')/3$, there cannot be two jobs before $p_j$, so the algorithm gives the optimal solution.\\
+Overall, the algorithm is $\frac{4}{3}-approximation$
+\end{document}
